@@ -15,6 +15,6 @@ router.get('/:id', sizeChartController.getSizeChartById);
 router.put('/update/:id', sizeChartController.updateSizeChart);
 
 // Delete a size chart
-router.delete('/:id', sizeChartController.deleteSizeChart);
+router.delete('/delete/:id', sizeChartController.deleteSizeChart);
 
 module.exports = router;
