@@ -12,7 +12,7 @@ router.get('/get', sizeChartController.getAllSizeCharts);
 router.get('/:id', sizeChartController.getSizeChartById);
 
 // Update a size chart
-router.put('/update/:id', sizeChartController.updateSizeChart);
+router.patch('/update/:id', sizeChartController.updateSizeChart);
 
 // Delete a size chart
 router.delete('/delete/:id', sizeChartController.deleteSizeChart);
