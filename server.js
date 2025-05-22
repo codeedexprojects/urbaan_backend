@@ -29,6 +29,7 @@ const WalkinCoupen = require('./Models/User/WalkinCoupen');
 const sizeChartRoutes= require('./Routes/Admin/SizeChart/sizeChartRoutes')
 const userSizeChartRoutes=require('./Routes/User/SizeChart/sizeChartRoutes')
 const materialRoutes=require('./Routes/Admin/Material/MaterialRoutes')
+const specificationRoutes=require('./Routes/Admin/Specifications/specificationRoutes')
 
 const userCartRoutes = require('./Routes/User/Cart/cartRoute')
 const wishlistRoutes = require('./Routes/User/Wishlist/wishlistRoute')
@@ -71,7 +72,7 @@ app.use('/api/admin/delivery-fee',deliveryFeeRoutes)
 app.use('/api/admin/invoice',invoiceRoutes)
 app.use('/api/admin/sizechart',sizeChartRoutes)
 app.use('/api/admin/material',materialRoutes)
-
+app.use('/api/admin/specification',specificationRoutes)
 
 
 

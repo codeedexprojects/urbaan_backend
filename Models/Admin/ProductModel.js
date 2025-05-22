@@ -26,6 +26,7 @@ const productSchema = new mongoose.Schema({
   isLatestProduct: { type: Boolean, default: false },
   isOfferProduct: { type: Boolean, default: false },
   isFeaturedProduct: { type: Boolean, default: false },
+  freeDelivery:{ type: Boolean, default: false },
   sizeChartRefs: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SizeChart'
