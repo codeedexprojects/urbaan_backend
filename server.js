@@ -30,6 +30,7 @@ const sizeChartRoutes= require('./Routes/Admin/SizeChart/sizeChartRoutes')
 const userSizeChartRoutes=require('./Routes/User/SizeChart/sizeChartRoutes')
 const materialRoutes=require('./Routes/Admin/Material/MaterialRoutes')
 const specificationRoutes=require('./Routes/Admin/Specifications/specificationRoutes')
+const userCouponRoutes=require('./Routes/User/Coupon/couponRoutes')
 
 const userCartRoutes = require('./Routes/User/Cart/cartRoute')
 const wishlistRoutes = require('./Routes/User/Wishlist/wishlistRoute')
@@ -94,6 +95,7 @@ app.use('/api/user/sizechart',userSizeChartRoutes)
 app.use('/api/walkin/coupon',walk_inCoupon)
 app.use("/api/webhook/razorpay", express.raw({ type: "application/json" }));
 app.use('/api/webhook/razorpay', webhookRoutes);
+app.use('/api/user/coupon',userCouponRoutes)
 
 
 // test

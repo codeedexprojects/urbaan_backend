@@ -24,7 +24,9 @@ exports.createCheckout = async (req, res) => {
       return res.status(404).json({ message: "Invalid shipping address" });
     }
 
-    let discountedPrice = cart.totalPrice;
+    // let discountedPrice = cart.totalPrice;
+    let discountedPrice = Math.round(cart.totalPrice);
+
     let couponAmount = 0;
     let couponRemoved = false;
 
@@ -55,7 +57,8 @@ exports.createCheckout = async (req, res) => {
             couponAmount = coupon.discountValue;
           }
 
-          discountedPrice = Math.max(cart.totalPrice - couponAmount, 0);
+        discountedPrice = Math.round(Math.max(cart.totalPrice - couponAmount, 0));
+  // discountedPrice = Math.max(cart.totalPrice - couponAmount, 0);
         } else {
           couponRemoved = true;
         }
@@ -123,7 +126,7 @@ exports.getCheckoutById = async (req, res) => {
       .populate({
         path: 'cartItems.productId', 
         model: 'Products', 
-        select: 'title  images color size', 
+        select: 'title  images color size freeDelivery actualPrice offerPrice', 
       }). populate({
         path: 'coupen', 
         model: 'Coupon', 

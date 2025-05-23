@@ -428,6 +428,43 @@ exports.applyCouponToCart = async (req, res) => {
   }
 };
 
+// remove coupon 
+exports.removeCouponFromCart = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    // Validate input
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Find the user's cart
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    // If no coupon is applied
+    if (!cart.coupon) {
+      return res.status(400).json({ message: "No coupon applied to this cart" });
+    }
+
+    // Revert coupon fields
+    cart.coupon = null;
+    cart.coupenAmount = 0;
+    cart.discountType = null;
+    cart.discountedTotal = cart.totalPrice;
+
+    await cart.save();
+
+    res.status(200).json({ message: "Coupon removed successfully", cart });
+  } catch (error) {
+    res.status(500).json({ message: "Error removing coupon", error: error.message });
+  }
+};
+
+
 // utility function
 
 const validateAndApplyCoupon = async (cart, couponCode) => {

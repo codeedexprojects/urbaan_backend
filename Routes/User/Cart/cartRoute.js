@@ -13,6 +13,7 @@ router.patch('/update', jwtVerify(['user']), cartController.updateCartItemQuanti
 router.delete('/clear/:userId', jwtVerify(['user']), cartController.clearCart);
 
 router.post('/applyCoupon',jwtVerify(['user']),cartController.applyCouponToCart)
+router.post("/remove-coupon",jwtVerify(['user']), cartController.removeCouponFromCart);
 
 
 module.exports = router;
