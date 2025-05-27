@@ -24,6 +24,10 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: [true, "Address is required"],
   },
+  area: {
+    type: String,
+    required: [true, "Address is required"],
+  },
   landmark: {
     type: String,
     default: null,

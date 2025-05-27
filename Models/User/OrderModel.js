@@ -67,19 +67,21 @@ const orderSchema = new mongoose.Schema({
 
 orderSchema.pre("validate", async function (next) {
   if (!this.orderId) {
-   
     try {
+      // Get or create the counter
       const counter = await Counter.findOneAndUpdate(
-        { _id: "orderId" },  // Ensure _id is used correctly
-        { $inc: { sequenceValue: 1 } }, 
-        { new: true, upsert: true, setDefaultsOnInsert: true } // Ensure default values
+        { _id: "orderId" },
+        { $inc: { sequenceValue: 1 } },
+        { new: true, upsert: true, setDefaultsOnInsert: true }
       );
 
       if (!counter) {
         return next(new Error("Counter document not found or created"));
       }
 
-      this.orderId = counter.sequenceValue;
+      // Format the orderId as "UR" followed by 3-digit number (e.g., UR001, UR002)
+      const formattedNumber = String(counter.sequenceValue).padStart(3, '0');
+      this.orderId = `UR${formattedNumber}`;
     } catch (error) {
       return next(error);
     }
@@ -100,25 +102,31 @@ const generateUniqueInvoiceNumber = async () => {
   const now = new Date();
   const currentYear = now.getFullYear();
   const nextYear = currentYear + 1;
-  // Determine Financial Year (April - March)
-  const financialYear =
-    now.getMonth() + 1 >= 4
-      ? `${String(currentYear).slice(2)}-${String(nextYear).slice(2)}`
-      : `${String(currentYear - 1).slice(2)}-${String(currentYear).slice(2)}`;
-  const prefix = `URO${financialYear}`; // Example: URO24-25
-  const counterId = `invoice_${financialYear}`;
-  
+
+  // Determine Financial Year (April to March)
+  const startYearShort = now.getMonth() + 1 >= 4
+    ? String(currentYear).slice(2)
+    : String(currentYear - 1).slice(2);
+  const endYearShort = now.getMonth() + 1 >= 4
+    ? String(nextYear).slice(2)
+    : String(currentYear).slice(2);
+
+  const counterId = `invoice_${startYearShort}`; // e.g., invoice_25
+  const prefix = `URO-${startYearShort}`;        // e.g., URO-25
+  const serialYear = endYearShort;               // e.g., 26
+
   try {
-    // Use a single atomic operation with upsert
+    // Use atomic operation to get and increment the counter
     const counter = await Counter.findOneAndUpdate(
       { _id: counterId },
       { $inc: { sequenceValue: 1 } },
-      { new: true, upsert: true } // This creates the document if it doesn't exist
+      { new: true, upsert: true }
     );
-    
-    // Ensure the sequence is 7 digits long
-    const formattedNumber = String(counter.sequenceValue).padStart(7, '0');
-    return `${prefix}${formattedNumber}`;
+
+    // Serial number: e.g., 26001
+    const formattedSerial = `${serialYear}${String(counter.sequenceValue).padStart(3, '0')}`;
+
+    return `${prefix}/${formattedSerial}`; // e.g., URO-25/26001
   } catch (error) {
     console.error("Error generating invoice number:", error);
     throw error;

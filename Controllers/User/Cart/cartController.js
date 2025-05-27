@@ -322,10 +322,6 @@ exports.clearCart = async (req, res) => {
   } 
 };
 
-// delete cart
-
-
-
 // apply coupon
 exports.applyCouponToCart = async (req, res) => {
   try {
