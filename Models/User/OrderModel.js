@@ -39,6 +39,18 @@ const orderSchema = new mongoose.Schema({
     default: 'Pending',
     enum: ['Pending', 'Processing', 'In-Transist', 'invoice_generated','Delivered', 'Cancelled'],
   },
+ isRefunded: {
+  type: Boolean, 
+  default: false
+},
+cancelReason: {
+  type: String,
+  default: null
+},
+cancelledAt: {
+  type: Date,
+  default: null
+},
   deliveryMail:{type:Boolean,default:false},
   dispatchMail:{type:Boolean,default:false},
   discountedAmount:{

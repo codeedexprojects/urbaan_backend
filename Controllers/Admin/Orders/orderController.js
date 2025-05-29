@@ -93,10 +93,9 @@ exports.updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: "Error updating order status", error: err.message });
   }
 };
-// bulk edit on status
 exports.bulkUpdateOrderStatus = async (req, res) => {
   try {
-    const { orderIds, status } = req.body;
+    const { orderIds, status, cancellationPassword, isRefunded, cancelReason } = req.body;
 
     if (!Array.isArray(orderIds) || orderIds.length === 0) {
       return res.status(400).json({ message: "Invalid or empty orderIds array" });
@@ -105,6 +104,19 @@ exports.bulkUpdateOrderStatus = async (req, res) => {
     const validStatuses = ['Pending', 'Processing', 'In-Transist', 'invoice_generated', 'Delivered', 'Cancelled'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    // If status is 'Cancelled', validate cancellation password
+    if (status === 'Cancelled') {
+      const CANCELLATION_PASSWORD = process.env.CANCELLATION_PASSWORD || 'your_secret_password';
+      
+      if (!cancellationPassword) {
+        return res.status(400).json({ message: "Cancellation password is required" });
+      }
+      
+      if (cancellationPassword !== CANCELLATION_PASSWORD) {
+        return res.status(400).json({ message: "Invalid cancellation password" });
+      }
     }
 
     // Fetch orders
@@ -117,8 +129,16 @@ exports.bulkUpdateOrderStatus = async (req, res) => {
     let emailOrders = [];
     let skippedEmails = [];
 
+    // Prepare update fields for cancellation
+    let baseUpdateFields = { status };
+    if (status === 'Cancelled') {
+      baseUpdateFields.isRefunded = isRefunded || false;
+      baseUpdateFields.cancelReason = cancelReason || "No reason provided";
+      baseUpdateFields.cancelledAt = new Date();
+    }
+
     for (const order of orders) {
-      let updateFields = {}; 
+      let updateFields = { ...baseUpdateFields };
       let shouldSendEmail = false;
 
       if (status === 'In-Transist') {
@@ -133,8 +153,8 @@ exports.bulkUpdateOrderStatus = async (req, res) => {
         } else {
           skippedEmails.push(order._id);
         }
-      } 
-
+      }
+      
       if (status === 'Delivered') {
         if (!order.deliveryMail) {
           shouldSendEmail = true;
@@ -174,7 +194,7 @@ exports.bulkUpdateOrderStatus = async (req, res) => {
     // Update only valid orders
     await Order.updateMany(
       { _id: { $in: validOrders.map(order => order._id) } },
-      { $set: { status } }
+      { $set: baseUpdateFields }
     );
 
     // Send emails for eligible orders
