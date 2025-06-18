@@ -5,7 +5,8 @@ exports.addAddress = async (req, res) => {
   try {
     const {
       userId,
-      name,
+      firstName,
+      lastName,
       number,
       address,
       area,
@@ -13,6 +14,7 @@ exports.addAddress = async (req, res) => {
       pincode,
       city,
       state,
+      country,
       addressType,
       defaultAddress,
     } = req.body;
@@ -24,7 +26,8 @@ exports.addAddress = async (req, res) => {
 
     const newAddress = new Address({
       userId,
-      name,
+      firstName,
+      lastName,
       number,
       address,
       area,
@@ -32,6 +35,7 @@ exports.addAddress = async (req, res) => {
       pincode,
       city,
       state,
+      country,
       addressType,
       defaultAddress: !!defaultAddress, // Ensure it's a boolean
     });

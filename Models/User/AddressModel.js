@@ -6,7 +6,11 @@ const addressSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
-  name: {
+  firstName: {
+    type: String,
+    required: [true, "Name is required"],
+  },
+  lastName: {
     type: String,
     required: [true, "Name is required"],
   },
@@ -16,7 +20,7 @@ const addressSchema = new mongoose.Schema({
     validate: {
       validator: function (v) {
         return /^\d{10}$/.test(v);
-      }, 
+      },
       message: props => `${props.value} is not a valid phone number!`,
     },
   },
@@ -33,8 +37,8 @@ const addressSchema = new mongoose.Schema({
     default: null,
   },
   pincode: {
-   type: Number,
-   required: [true, "Pincode is required"],
+    type: Number,
+    required: [true, "Pincode is required"],
   },
   city: {
     type: String,
@@ -44,14 +48,18 @@ const addressSchema = new mongoose.Schema({
     type: String,
     required: [true, "State is required"],
   },
+  country: {
+    type: String,
+    required: [true, "Country is required"],
+  },
   addressType: {
     type: String,
     enum: ['home', 'work', 'other'],
     required: [true, "Address type is required"],
   },
-  defaultAddress:{
-    type:Boolean,
-    default:false
+  defaultAddress: {
+    type: Boolean,
+    default: false
   }
 });
 

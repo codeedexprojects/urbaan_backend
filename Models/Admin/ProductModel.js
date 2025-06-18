@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
   title: { type: String, required: [true, "Product title is required"] },
-  product_Code: { type: String, required: [true, "Product Code is required"],unique:true },
+  product_Code: { type: String, required: [true, "Product Code is required"], unique: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: [true, "Product category is required"] },
   subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'SubCategory', required: [true, "Product subcategory is required"] },
   actualPrice: { type: Number, required: [true, "Actual price is required"] },
@@ -26,7 +26,7 @@ const productSchema = new mongoose.Schema({
   isLatestProduct: { type: Boolean, default: false },
   isOfferProduct: { type: Boolean, default: false },
   isFeaturedProduct: { type: Boolean, default: false },
-  freeDelivery:{ type: Boolean, default: false },
+  freeDelivery: { type: Boolean, default: false },
   sizeChartRefs: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'SizeChart'
@@ -39,7 +39,8 @@ const productSchema = new mongoose.Schema({
     occasion: { type: String, default: null },
     innerLining: { type: String, default: null },
     material: { type: String, default: null },
-    pocket: { type: String, default: null }
+    pocket: { type: String, default: null },
+    neck: { type: String, default: null }
   },
   createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });

@@ -19,6 +19,7 @@ const productSpecificationSchema = new mongoose.Schema({
       'innerLining', 
       'material', 
       'pocket',
+      'neck',
       'other'
     ]
   },
@@ -30,8 +31,6 @@ const productSpecificationSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Add index for faster queries
-// productSpecificationSchema.index({ name: 1, type: 1 }, { unique: true });
 
 const ProductSpecification = mongoose.model('ProductSpecification', productSpecificationSchema);
 
