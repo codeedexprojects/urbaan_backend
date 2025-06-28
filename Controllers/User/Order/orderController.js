@@ -205,6 +205,9 @@ exports.placeOrder = async (req, res) => {
     if (!checkout) throw new Error("Checkout not found");
     if (!checkout.cartItems || checkout.cartItems.length === 0) throw new Error("No products found in checkout");
 
+     const address = await Address.findById(addressId);
+    if (!address) throw new Error("Address not found");
+
     const validatedProducts = [];
     let totalPrice = 0;
 
@@ -244,6 +247,19 @@ exports.placeOrder = async (req, res) => {
     const order = new Order({
       userId,
       addressId,
+      addressDetails: { 
+        firstName: address.firstName,
+        lastName: address.lastName,
+        number: address.number,
+        address: address.address,
+        area: address.area,
+        landmark: address.landmark,
+        pincode: address.pincode,
+        city: address.city,
+        state: address.state,
+        country: address.country,
+        addressType: address.addressType
+      },
       products: validatedProducts,
       totalPrice,
       discountedAmount: checkout.discountedPrice,

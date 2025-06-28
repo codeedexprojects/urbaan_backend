@@ -6,8 +6,19 @@ const invoiceSchema = new mongoose.Schema({
   order_id:{type: mongoose.Schema.Types.ObjectId, ref: 'orders', required: true},
   customerName: { type: String, required: true },
   customerMobile: { type: String, required: true },
-  address: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', required: true },
-  products: [
+address: {  // Changed from ObjectId to embedded document
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    number: { type: String, required: true },
+    address: { type: String, required: true },
+    area: { type: String, required: true },
+    landmark: { type: String },
+    pincode: { type: Number, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    country: { type: String, required: true },
+    addressType: { type: String, enum: ['home', 'work', 'other'], required: true }
+  },  products: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Products', required: true },
       size: { type: String, required: true },

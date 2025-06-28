@@ -114,15 +114,12 @@ exports.createCheckout = async (req, res) => {
 };
 
 
-
-
-
 // Get Checkout by ID
 exports.getCheckoutById = async (req, res) => {
   try {
     const checkout = await Checkout.findById(req.params.id)
       .populate('userId', 'name email') // Populate user info
-      .populate('addressId', 'name number address landmark city landmark state addressType pincode ') // Populate address details
+      .populate('addressId', 'firstName lastName area country number address landmark city landmark state addressType pincode ') // Populate address details
       .populate({
         path: 'cartItems.productId', 
         model: 'Products', 

@@ -4,11 +4,24 @@ const Counter=require('../../Models/User/CounterModel')
 const crypto = require('crypto'); 
 
 const orderSchema = new mongoose.Schema({
-  orderId: { type: Number,required: true  ,unique: true }, // Unique numeric order ID
+  orderId: { type: String,required: true  ,unique: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   razorpayOrderId:{type:String},
   razorpayPaymentId:{type:String},
   addressId: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', required: true },
+  addressDetails: {
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    number: { type: String, required: true },
+    address: { type: String, required: true },
+    area: { type: String, required: true },
+    landmark: { type: String },
+    pincode: { type: Number, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    country: { type: String, required: true },
+    addressType: { type: String, enum: ['home', 'work', 'other'], required: true }
+  },
   products: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Products', required: true },
@@ -192,7 +205,7 @@ const createInvoiceForOrder = async (order) => {
       order_id: updatedOrder._id,
       customerName: updatedOrder.userId.name,
       customerMobile: updatedOrder.addressId?.number || updatedOrder.userId?.phone,
-      address: updatedOrder.addressId || {}, // Ensure no null error
+      address: updatedOrder.addressDetails || {}, 
       products: updatedOrder.products?.map(product => ({
         productId: product?.productId || null,
         size: product?.size || null,
@@ -217,7 +230,8 @@ const createInvoiceForOrder = async (order) => {
 
 
 // POST-SAVE HOOK (Handles Single Order Save)
-orderSchema.post("findOneAndUpdate", async function (doc, next) {
+orderSchema.post("findOneAndUpdate", async function(doc, next) {
+  console.log("findOneAndUpdate hook triggered for order:", doc?._id);
   await createInvoiceForOrder(doc);
   next();
 });
@@ -225,9 +239,10 @@ orderSchema.post("findOneAndUpdate", async function (doc, next) {
 // POST-UPDATE-MANY HOOK (Handles Bulk Order Updates)
 orderSchema.post("updateMany", async function (doc, next) {
   try {
-    const query = this.getQuery(); // Gets the filter used in updateMany()
+    const query = this.getQuery(); 
+     console.log("Filter query:", query);
     const updatedOrders = await Order.find(query);
-
+console.log("Affected orders count:", updatedOrders.length);
     // Process only orders where status is "invoice_generated"
     const ordersToInvoice = updatedOrders.filter(order => order.status === "invoice_generated");
 
