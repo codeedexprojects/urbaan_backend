@@ -43,6 +43,12 @@ const orderSchema = new mongoose.Schema({
     required: true,
     enum: ['Pending', 'Paid'],
   },
+  orderNote: {
+    type: String,
+    maxlength: 500, 
+    trim: true,
+    default: null
+  },
 
   TrackId:{
     type:String

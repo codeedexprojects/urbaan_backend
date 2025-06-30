@@ -175,7 +175,7 @@ exports.initiateOrder = async (req, res) => {
 // place order
 
 exports.placeOrder = async (req, res) => {
-  const { userId, addressId, paymentMethod, deliveryCharge, checkoutId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+  const { userId, addressId, paymentMethod,orderNote , deliveryCharge, checkoutId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -269,6 +269,7 @@ exports.placeOrder = async (req, res) => {
       paymentStatus: "Paid",
       razorpayOrderId,
       razorpayPaymentId,
+      orderNote: orderNote || null,
     });
 
     await order.save({ session });
