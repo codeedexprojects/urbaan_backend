@@ -3,13 +3,13 @@ const Address = require('../../../Models/User/AddressModel');
 const Product = require('../../../Models/Admin/ProductModel');
 const generateNumericOrderId = require('../../../utils/generateNumericOrderId');
 const Cart = require('../../../Models/User/CartModel')
-const Checkout=require('../../../Models/User/CheckoutModel')
-const User=require('../../../Models/User/UserModel')
-const Coupon=require('../../../Models/Admin/CouponModel');
-const mongoose=require('mongoose')
+const Checkout = require('../../../Models/User/CheckoutModel')
+const User = require('../../../Models/User/UserModel')
+const Coupon = require('../../../Models/Admin/CouponModel');
+const mongoose = require('mongoose')
 const razorpay = require('../../../config/RazorpayInstance');
 const crypto = require("crypto");
-const { sendEmail } = require('../../../config/mailGun');  
+const { sendEmail } = require('../../../config/mailGun');
 
 
 
@@ -175,7 +175,7 @@ exports.initiateOrder = async (req, res) => {
 // place order
 
 exports.placeOrder = async (req, res) => {
-  const { userId, addressId, paymentMethod,orderNote , deliveryCharge, checkoutId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
+  const { userId, addressId, paymentMethod, orderNote, deliveryCharge, checkoutId, razorpayPaymentId, razorpayOrderId, razorpaySignature } = req.body;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -199,13 +199,13 @@ exports.placeOrder = async (req, res) => {
         select: "discountValue discountType code title",
       });
 
-    const VerifiedUser=await User.findById(userId).populate()
+    const VerifiedUser = await User.findById(userId).populate()
     console.log(VerifiedUser.email)
 
     if (!checkout) throw new Error("Checkout not found");
     if (!checkout.cartItems || checkout.cartItems.length === 0) throw new Error("No products found in checkout");
 
-     const address = await Address.findById(addressId);
+    const address = await Address.findById(addressId);
     if (!address) throw new Error("Address not found");
 
     const validatedProducts = [];
@@ -247,7 +247,7 @@ exports.placeOrder = async (req, res) => {
     const order = new Order({
       userId,
       addressId,
-      addressDetails: { 
+      addressDetails: {
         firstName: address.firstName,
         lastName: address.lastName,
         number: address.number,
@@ -279,7 +279,7 @@ exports.placeOrder = async (req, res) => {
     session.endSession();
 
     // mail
-    const userEmail = VerifiedUser.email; 
+    const userEmail = VerifiedUser.email;
     const userName = VerifiedUser.name;
     const subject = "Order Confirmation-URBAAN COLLECTIONS";
     const text = `Your order #${order.orderId} has been placed successfully. We'll notify you when your order is on its way!`;
@@ -306,6 +306,7 @@ exports.getUserOrders = async (req, res) => {
     const { userId } = req.params;
 
     const orders = await Order.find({ userId })
+      .sort({ createdAt: -1 })
       .populate('addressId')
       .populate({
         path: 'products.productId',
