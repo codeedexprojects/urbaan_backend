@@ -17,6 +17,7 @@ exports.MainSearch = async (req, res) => {
       $or: [
         { title: searchRegex },
         { description: searchRegex },
+         { product_Code: searchRegex },
         { "colors.color": searchRegex },
         { "features.netWeight": searchRegex },
         { "features.fit": searchRegex },
