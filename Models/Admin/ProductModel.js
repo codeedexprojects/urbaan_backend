@@ -40,7 +40,8 @@ const productSchema = new mongoose.Schema({
     innerLining: { type: String, default: null },
     material: { type: String, default: null },
     pocket: { type: String, default: null },
-    neck: { type: String, default: null }
+    neck: { type: String, default: null },
+    other: { type: String, default: null }
   },
   createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });
