@@ -79,7 +79,6 @@ exports.addProduct = async (req, res) => {
   } catch (error) {
     console.error("Error adding product:", error);
 
-    // Detailed error response
     res.status(400).json({
       error: "Product creation failed",
       details: error.message,
@@ -87,9 +86,6 @@ exports.addProduct = async (req, res) => {
     });
   }
 };
-
-
-
 
 // Get all products with optional filtering by category
 exports.getAllProducts = async (req, res) => {
