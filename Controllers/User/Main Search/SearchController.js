@@ -2,6 +2,8 @@ const Products = require("../../../Models/Admin/ProductModel");
 const Category = require("../../../Models/Admin/CategoryModel");
 const SubCategory= require("../../../Models/Admin/SubcategoyModel");
 const Wishlist=require("../../../Models/User/WishlistModel")
+
+
 exports.MainSearch = async (req, res) => {
   const { query, page = 1, limit = 10, userId } = req.query;
 
